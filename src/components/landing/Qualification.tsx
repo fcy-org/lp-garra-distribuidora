@@ -18,8 +18,8 @@ import { WHATSAPP_NUMBER } from "@/lib/config";
 import { captureLead, getTrackingParams, trackMetaLead } from "@/lib/tracking";
 import { Confetti } from "./Confetti";
 
-type Business = "Supermercado" | "Mercadinho" | "Padaria" | "Conveniência" | "Food Service" | "Outros";
-type Range = "Até R$ 3.000" | "R$ 3.000 a R$ 10.000" | "R$ 10.000 a R$ 30.000" | "Acima de R$ 30.000";
+type Business = "Supermercado" | "Mercadinho" | "Conveniência" | "Padaria" | "Distribuidora / Revenda" | "Outro";
+type Range = "Até R$ 3.000" | "R$ 3.000 a R$ 10.000" | "R$ 10.000 a R$ 30.000" | "Acima de R$ 30.000" | "Ainda não sei";
 
 interface FormData {
   business: Business | "";
@@ -48,15 +48,15 @@ const empty: FormData = {
 const businessOptions: { value: Business; icon: typeof Store }[] = [
   { value: "Supermercado", icon: ShoppingCart },
   { value: "Mercadinho", icon: Store },
-  { value: "Padaria", icon: Croissant },
   { value: "Conveniência", icon: Coffee },
-  { value: "Food Service", icon: ChefHat },
-  { value: "Outros", icon: Store },
+  { value: "Padaria", icon: Croissant },
+  { value: "Distribuidora / Revenda", icon: ChefHat },
+  { value: "Outro", icon: Store },
 ];
 
 const categoryOptions = [
-  "Alimentos", "Farinhas", "Laticínios", "Doces",
-  "Confeitaria", "Food Service", "Higiene", "Limpeza",
+  "Balas e chicletes", "Pirulitos e mastigáveis", "Jujubas e gomas",
+  "Chocolates e snacks doces", "Produtos infantis", "Ainda não vendo muitas guloseimas",
 ];
 
 const rangeOptions: Range[] = [
@@ -64,6 +64,7 @@ const rangeOptions: Range[] = [
   "R$ 3.000 a R$ 10.000",
   "R$ 10.000 a R$ 30.000",
   "Acima de R$ 30.000",
+  "Ainda não sei",
 ];
 
 const piauiCities = [
@@ -119,21 +120,18 @@ const piauiCities = [
 
 const processingMessages = [
   { icon: "⚽", text: "Analisando seu perfil..." },
-  { icon: "🏆", text: "Montando sua escalação..." },
-  { icon: "📈", text: "Identificando oportunidades..." },
+  { icon: "🏆", text: "Montando seu mix campeão..." },
+  { icon: "📈", text: "Identificando guloseimas de maior giro..." },
   { icon: "🦅", text: "Preparando sua recomendação..." },
 ];
 
 const categoryEmoji: Record<string, string> = {
-  Alimentos: "🛒",
-  Farinhas: "🌾",
-  Laticínios: "🥛",
-  Doces: "🍫",
-  Confeitaria: "🧁",
-  "Food Service": "🍽️",
-  Higiene: "🧴",
-  Limpeza: "🧼",
-  Panificação: "🥖",
+  "Balas e chicletes": "🍬",
+  "Pirulitos e mastigáveis": "🍭",
+  "Jujubas e gomas": "🟢",
+  "Chocolates e snacks doces": "🍫",
+  "Produtos infantis": "🛒",
+  "Ainda não vendo muitas guloseimas": "✨",
 };
 
 function onlyDigits(value: string) {
@@ -181,33 +179,38 @@ function computePotential(d: FormData): "ALTO" | "MÉDIO" | "EM DESENVOLVIMENTO"
 function recommendedCategories(d: FormData): string[] {
   const base = new Set(d.categories);
   if (d.business === "Padaria") {
-    base.add("Panificação");
-    base.add("Laticínios");
-    base.add("Doces");
+    base.add("Balas e chicletes");
+    base.add("Chocolates e snacks doces");
+    base.add("Produtos infantis");
   }
   if (d.business === "Supermercado" || d.business === "Mercadinho") {
-    base.add("Alimentos");
-    base.add("Higiene");
-    base.add("Limpeza");
+    base.add("Balas e chicletes");
+    base.add("Jujubas e gomas");
+    base.add("Pirulitos e mastigáveis");
   }
   if (d.business === "Conveniência") {
-    base.add("Doces");
-    base.add("Alimentos");
+    base.add("Balas e chicletes");
+    base.add("Pirulitos e mastigáveis");
+    base.add("Chocolates e snacks doces");
   }
-  if (d.business === "Food Service") {
-    base.add("Food Service");
-    base.add("Laticínios");
+  if (d.business === "Distribuidora / Revenda") {
+    base.add("Balas e chicletes");
+    base.add("Jujubas e gomas");
+    base.add("Produtos infantis");
   }
-  return Array.from(base).slice(0, 6);
+  const categories = Array.from(base)
+    .filter((category) => category !== "Ainda não vendo muitas guloseimas")
+    .slice(0, 6);
+  return categories.length > 0 ? categories : ["Balas e chicletes", "Produtos infantis", "Chocolates e snacks doces"];
 }
 
 function getBusinessLabel(d: FormData) {
-  return d.business === "Outros" ? d.customBusiness : d.business;
+  return d.business === "Outro" ? d.customBusiness : d.business;
 }
 
 function buildWhatsAppUrl(d: FormData) {
   const business = getBusinessLabel(d);
-  const msg = `Olá, Garra Distribuidora.\n\nAcabei de concluir minha Escalação Campeã da Copa.\n\nNome: ${d.name}\nWhatsApp: ${d.whatsapp}\nCNPJ: ${d.cnpj}\nTipo de negócio: ${business}\nCidade: ${d.city} - PI\nFaixa de compras: ${d.range}\nCategorias de interesse: ${d.categories.join(", ")}\n\nGostaria de receber minha recomendação personalizada.`;
+  const msg = `Olá, Garra Distribuidora.\n\nAcabei de concluir minha Escalação Campeã de Guloseimas para a Copa.\n\nNome: ${d.name}\nWhatsApp: ${d.whatsapp}\nCNPJ: ${d.cnpj}\nTipo de estabelecimento: ${business}\nCidade: ${d.city} - PI\nFaixa de compra mensal: ${d.range}\nProdutos com mais saída: ${d.categories.join(", ")}\n\nGostaria de receber minha recomendação de mix.`;
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
 }
 
@@ -243,10 +246,10 @@ export function Qualification() {
   const validateStep = (s: number): boolean => {
     const e: typeof errors = {};
     if (s === 0 && !data.business) e.business = "Selecione uma opção";
-    if (s === 0 && data.business === "Outros" && data.customBusiness.trim().length < 2) {
-      e.customBusiness = "Informe o tipo de negócio";
+    if (s === 0 && data.business === "Outro" && data.customBusiness.trim().length < 2) {
+      e.customBusiness = "Informe o tipo de estabelecimento";
     }
-    if (s === 1 && data.categories.length === 0) e.categories = "Escolha ao menos uma categoria";
+    if (s === 1 && data.categories.length === 0) e.categories = "Escolha ao menos uma opção";
     if (s === 2 && !data.range) e.range = "Selecione uma faixa";
     if (s === 3) {
       if (data.name.trim().length < 2) e.name = "Informe seu nome";
@@ -275,8 +278,10 @@ export function Qualification() {
       state: "PI",
       purchase_range: data.range,
       categories: data.categories,
+      campaign: "Guloseimas Copa",
+      interest_products: data.categories,
       potential: computePotential(data),
-      source: "Escalação Campeã da Copa",
+      source: "Escalação Campeã de Guloseimas",
       ...trackingParams,
     });
   };
@@ -319,7 +324,7 @@ export function Qualification() {
               Monte sua <span className="text-shimmer">Escalação Campeã</span>
             </h2>
             <p className="mt-3 text-muted-foreground md:text-lg">
-              Responda rapidamente para receber uma recomendação personalizada.
+              Responda rapidamente para receber uma recomendação de mix para vender mais na Copa.
             </p>
             <p className="mt-2 text-xs font-semibold text-brand-gold">
               Atendimento para estabelecimentos no Piauí.
@@ -354,7 +359,7 @@ export function Qualification() {
               transition={{ duration: 0.3 }}
             >
               {step === 0 && (
-                <StepWrapper title="Qual é o seu negócio?" error={errors.business}>
+                <StepWrapper title="Qual é o seu ponto de venda?" error={errors.business}>
                   <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
                     {businessOptions.map(({ value, icon: Icon }) => {
                       const active = data.business === value;
@@ -362,7 +367,7 @@ export function Qualification() {
                         <button
                           key={value}
                           onClick={() => {
-                            if (value === "Outros") {
+                            if (value === "Outro") {
                               setData({ ...data, business: value });
                               setErrors({});
                               return;
@@ -381,13 +386,13 @@ export function Qualification() {
                       );
                     })}
                   </div>
-                  {data.business === "Outros" && (
+                  {data.business === "Outro" && (
                     <div className="mt-5">
                       <input
                         type="text"
                         value={data.customBusiness}
                         onChange={(e) => setData({ ...data, customBusiness: e.target.value })}
-                        placeholder="Digite o tipo de negócio"
+                        placeholder="Digite o tipo de estabelecimento"
                         maxLength={80}
                         className="w-full rounded-xl border-2 border-border bg-input/40 px-4 py-3 text-base font-semibold text-foreground outline-none transition focus:border-brand-yellow sm:px-5 sm:py-4 sm:text-lg"
                       />
@@ -400,7 +405,7 @@ export function Qualification() {
               )}
 
               {step === 1 && (
-                <StepWrapper title="Quais categorias deseja fortalecer?" subtitle="Selecione todas que fazem sentido para o seu negócio." error={errors.categories}>
+                <StepWrapper title="Quais produtos costumam ter mais saída no seu ponto?" error={errors.categories}>
                   <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-4">
                     {categoryOptions.map((c) => {
                       const active = data.categories.includes(c);
@@ -431,7 +436,7 @@ export function Qualification() {
               )}
 
               {step === 2 && (
-                <StepWrapper title="Qual sua faixa de compras mensais?" error={errors.range}>
+                <StepWrapper title="Qual faixa de compra mensal faz sentido para o seu negócio?" error={errors.range}>
                   <div className="grid gap-3 sm:grid-cols-2">
                     {rangeOptions.map((r) => {
                       const active = data.range === r;
@@ -455,7 +460,7 @@ export function Qualification() {
 
               {step === 3 && (
                 <StepWrapper
-                  title="Preencha seus dados para liberar a escalação"
+                  title="Preencha seus dados para receber uma recomendação de mix"
                   subtitle="Atendemos estabelecimentos no Piauí. A cidade informada precisa ser do estado."
                 >
                   <div className="grid gap-4">
@@ -532,7 +537,7 @@ export function Qualification() {
                 disabled={isSubmitting}
                 className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-gold px-6 py-4 text-center text-sm font-black uppercase tracking-wider text-primary-foreground shadow-gold transition hover:scale-[1.03] disabled:cursor-not-allowed disabled:opacity-75 sm:w-auto sm:px-7"
               >
-                <span>{isSubmitting ? "Enviando..." : step === 3 ? "Liberar minha escalação" : "Continuar"}</span>
+                <span>{isSubmitting ? "Enviando..." : step === 3 ? "Receber recomendação" : "Continuar"}</span>
                 <ArrowRight className="h-4 w-4" />
               </button>
             </div>
@@ -623,7 +628,7 @@ function Result({ data, onRestart }: { data: FormData; onRestart: () => void }) 
         <span className="min-w-0 truncate">Resultado pronto</span>
       </div>
       <h3 className="mt-4 text-3xl font-black leading-tight text-foreground md:text-4xl">
-        Sua Escalação Está <span className="text-shimmer">Pronta</span>
+        Seu Mix Campeão Está <span className="text-shimmer">Pronto</span>
       </h3>
 
       <div className="mt-8 rounded-2xl border border-brand-gold/40 bg-brand-green-darker/60 p-4 sm:p-6">
@@ -635,7 +640,7 @@ function Result({ data, onRestart }: { data: FormData; onRestart: () => void }) 
 
       <div className="mt-8 text-left">
         <p className="text-sm font-bold uppercase tracking-widest text-muted-foreground">
-          Categorias recomendadas
+          Mix recomendado
         </p>
         <div className="mt-3 flex flex-wrap gap-2">
           {cats.map((c) => (
@@ -651,8 +656,8 @@ function Result({ data, onRestart }: { data: FormData; onRestart: () => void }) 
       </div>
 
       <p className="mt-6 text-sm leading-relaxed text-muted-foreground md:text-base">
-        Com base nas suas respostas, identificamos oportunidades para ampliar suas vendas durante a Copa
-        através dessas categorias.
+        Com base nas suas respostas, identificamos quais categorias podem ajudar seu estabelecimento
+        a vender mais durante a Copa.
       </p>
 
       <a
@@ -662,10 +667,10 @@ function Result({ data, onRestart }: { data: FormData; onRestart: () => void }) 
         className="mt-8 inline-flex w-full items-center justify-center gap-3 rounded-full bg-gradient-gold px-5 py-4 text-center text-sm font-black uppercase tracking-wider text-primary-foreground shadow-gold transition hover:scale-[1.02] sm:px-8 sm:py-5 md:text-lg"
       >
         <MessageCircle className="h-5 w-5 shrink-0" />
-        <span>Receber minha escalação no WhatsApp</span>
+        <span>Receber recomendação no WhatsApp</span>
       </a>
       <button onClick={onRestart} className="mt-4 text-xs font-semibold text-muted-foreground hover:text-foreground">
-        Refazer escalação
+        Refazer quiz
       </button>
     </div>
   );
