@@ -1,3 +1,8 @@
+[variables]
+HOST = "0.0.0.0"
+NITRO_HOST = "0.0.0.0"
+PORT = "3000"
+
 [phases.setup]
 nixPkgs = ["nodejs_22", "bun"]
 
@@ -8,4 +13,4 @@ cmds = ["npm install"]
 cmds = ["npm run build"]
 
 [start]
-cmd = "HOST=0.0.0.0 NITRO_HOST=0.0.0.0 node dist/server/index.mjs"
+cmd = "npm run start"
