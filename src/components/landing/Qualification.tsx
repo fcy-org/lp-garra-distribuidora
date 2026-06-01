@@ -19,7 +19,7 @@ import { captureLead, getTrackingParams, trackMetaLead } from "@/lib/tracking";
 import { Confetti } from "./Confetti";
 
 type Business = "Supermercado" | "Mercadinho" | "Conveniência" | "Padaria" | "Distribuidora / Revenda" | "Outro";
-type Range = "Até R$ 3.000" | "R$ 3.000 a R$ 10.000" | "R$ 10.000 a R$ 30.000" | "Acima de R$ 30.000" | "Ainda não sei";
+type Range = "Até R$ 3.000" | "R$ 3.000 a R$ 10.000" | "R$ 10.000 a R$ 30.000" | "Acima de R$ 30.000";
 
 interface FormData {
   business: Business | "";
@@ -64,7 +64,6 @@ const rangeOptions: Range[] = [
   "R$ 3.000 a R$ 10.000",
   "R$ 10.000 a R$ 30.000",
   "Acima de R$ 30.000",
-  "Ainda não sei",
 ];
 
 const piauiCities = [
@@ -359,7 +358,7 @@ export function Qualification() {
               transition={{ duration: 0.3 }}
             >
               {step === 0 && (
-                <StepWrapper title="Qual é o seu ponto de venda?" error={errors.business}>
+                <StepWrapper title="Qual o seu tipo de negócio?" error={errors.business}>
                   <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
                     {businessOptions.map(({ value, icon: Icon }) => {
                       const active = data.business === value;
@@ -412,12 +411,7 @@ export function Qualification() {
                       return (
                         <button
                           key={c}
-                          onClick={() =>
-                            setData({
-                              ...data,
-                              categories: active ? data.categories.filter((x) => x !== c) : [...data.categories, c],
-                            })
-                          }
+                          onClick={() => selectAndAdvance({ categories: [c] })}
                           className={`relative min-h-14 rounded-xl border-2 p-4 text-sm font-semibold leading-tight transition-all ${
                             active
                               ? "border-brand-yellow bg-brand-yellow/10 text-brand-yellow shadow-gold"
