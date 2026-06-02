@@ -275,6 +275,7 @@ export function Qualification() {
       phone: onlyDigits(data.whatsapp),
       whatsapp: onlyDigits(data.whatsapp),
       cnpj: onlyDigits(data.cnpj),
+      document: onlyDigits(data.cnpj),
       business: getBusinessLabel(data),
       business_type: getBusinessLabel(data),
       city: data.city.trim(),
