@@ -274,7 +274,6 @@ export function Qualification() {
       business: getBusinessLabel(data),
       business_type: getBusinessLabel(data),
       city: data.city.trim(),
-      state: "PI",
       purchase_range: data.range,
       categories: data.categories,
       campaign: "Guloseimas Copa",
@@ -282,6 +281,7 @@ export function Qualification() {
       potential: computePotential(data),
       source: "Escalação Campeã de Guloseimas",
       ...trackingParams,
+      state: "PI",
     });
   };
 

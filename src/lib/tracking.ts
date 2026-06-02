@@ -71,7 +71,8 @@ export async function captureLead(payload: Record<string, unknown>) {
   });
 
   if (!response.ok) {
-    throw new Error(`Lead capture failed with status ${response.status}`);
+    const body = await response.text().catch(() => "(sem resposta)");
+    throw new Error(`Lead capture failed — status ${response.status}: ${body}`);
   }
 }
 
