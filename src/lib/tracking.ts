@@ -1,5 +1,4 @@
-const LEAD_CAPTURE_URL = "https://newtracking-sales-sys.vercel.app/api/public/leads";
-const LEAD_CAPTURE_KEY = "cmpmpmr4s0001ld203h5ysqrj";
+import { submitLead } from "./api/leads.functions";
 
 type TrackingParams = Record<string, string | undefined>;
 
@@ -61,19 +60,7 @@ export function getTrackingParams(eventId = crypto.randomUUID()): TrackingParams
 }
 
 export async function captureLead(payload: Record<string, unknown>) {
-  const response = await fetch(LEAD_CAPTURE_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-lead-capture-key": LEAD_CAPTURE_KEY,
-    },
-    body: JSON.stringify(payload),
-  });
-
-  if (!response.ok) {
-    const body = await response.text().catch(() => "(sem resposta)");
-    throw new Error(`Lead capture failed — status ${response.status}: ${body}`);
-  }
+  await submitLead({ data: payload });
 }
 
 export function trackMetaLead(eventId: string) {
