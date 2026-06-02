@@ -27,6 +27,7 @@ interface FormData {
   range: Range | "";
   city: string;
   name: string;
+  email: string;
   whatsapp: string;
   cnpj: string;
   customBusiness: string;
@@ -40,6 +41,7 @@ const empty: FormData = {
   range: "",
   city: "",
   name: "",
+  email: "",
   whatsapp: "",
   cnpj: "",
   customBusiness: "",
@@ -209,7 +211,7 @@ function getBusinessLabel(d: FormData) {
 
 function buildWhatsAppUrl(d: FormData) {
   const business = getBusinessLabel(d);
-  const msg = `Olá, Garra Distribuidora.\n\nAcabei de concluir minha Escalação Campeã de Guloseimas para a Copa.\n\nNome: ${d.name}\nWhatsApp: ${d.whatsapp}\nCNPJ: ${d.cnpj}\nTipo de estabelecimento: ${business}\nCidade: ${d.city} - PI\nFaixa de compra mensal: ${d.range}\nProdutos com mais saída: ${d.categories.join(", ")}\n\nGostaria de receber minha recomendação de mix.`;
+  const msg = `Olá, Garra Distribuidora.\n\nAcabei de concluir minha Escalação Campeã de Guloseimas para a Copa.\n\nNome: ${d.name}\nE-mail: ${d.email}\nWhatsApp: ${d.whatsapp}\nCNPJ: ${d.cnpj}\nTipo de estabelecimento: ${business}\nCidade: ${d.city} - PI\nFaixa de compra mensal: ${d.range}\nProdutos com mais saída: ${d.categories.join(", ")}\n\nGostaria de receber minha recomendação de mix.`;
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
 }
 
@@ -252,6 +254,7 @@ export function Qualification() {
     if (s === 2 && !data.range) e.range = "Selecione uma faixa";
     if (s === 3) {
       if (data.name.trim().length < 2) e.name = "Informe seu nome";
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(data.email.trim())) e.email = "Informe um e-mail válido";
       if (onlyDigits(data.whatsapp).length < 10) e.whatsapp = "Informe um WhatsApp válido";
       if (!isPiauiCity(data.city)) e.city = "Informe uma cidade do Piauí";
       if (!isValidCnpj(data.cnpj)) e.cnpj = "Informe um CNPJ válido";
@@ -268,6 +271,7 @@ export function Qualification() {
 
     await captureLead({
       name: data.name.trim(),
+      email: data.email.trim(),
       phone: onlyDigits(data.whatsapp),
       whatsapp: onlyDigits(data.whatsapp),
       cnpj: onlyDigits(data.cnpj),
@@ -465,6 +469,18 @@ export function Qualification() {
                         onChange={(e) => setData({ ...data, name: e.target.value })}
                         placeholder="Nome"
                         maxLength={80}
+                        className="w-full rounded-xl border-2 border-border bg-input/40 px-4 py-3 text-base font-semibold text-foreground outline-none transition focus:border-brand-yellow sm:px-5 sm:py-4 sm:text-lg"
+                      />
+                    </FieldError>
+
+                    <FieldError error={errors.email}>
+                      <input
+                        type="email"
+                        value={data.email}
+                        onChange={(e) => setData({ ...data, email: e.target.value })}
+                        placeholder="E-mail"
+                        maxLength={120}
+                        autoComplete="email"
                         className="w-full rounded-xl border-2 border-border bg-input/40 px-4 py-3 text-base font-semibold text-foreground outline-none transition focus:border-brand-yellow sm:px-5 sm:py-4 sm:text-lg"
                       />
                     </FieldError>
