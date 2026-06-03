@@ -3,22 +3,18 @@ import { useCallback } from "react";
 import { Hero } from "@/components/landing/Hero";
 import { Benefits } from "@/components/landing/Benefits";
 import { Qualification } from "@/components/landing/Qualification";
+import heroImage from "@/assets/hero-eagle-shopping.webp";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Escalação Campeã da Copa — Garra Distribuidora" },
-      {
-        name: "description",
-        content:
-          "Receba uma recomendação personalizada de categorias e oportunidades para vender mais durante a Copa com a Garra Distribuidora.",
-      },
+      { name: "description", content: "Receba uma recomendação personalizada de categorias e oportunidades para vender mais durante a Copa com a Garra Distribuidora." },
       { property: "og:title", content: "Escalação Campeã da Copa — Garra Distribuidora" },
-      {
-        property: "og:description",
-        content:
-          "Monte sua escalação campeã e abasteça seu negócio para o maior evento esportivo do mundo.",
-      },
+      { property: "og:description", content: "Monte sua escalação campeã e abasteça seu negócio para o maior evento esportivo do mundo." },
+    ],
+    links: [
+      { rel: "preload", as: "image", href: heroImage, type: "image/webp" },
     ],
   }),
   component: Index,

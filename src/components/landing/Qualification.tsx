@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
 import { IMaskInput } from "react-imask";
 import {
   ArrowLeft,
@@ -344,24 +343,15 @@ export function Qualification() {
                 <span>{Math.round(progress)}%</span>
               </div>
               <div className="h-2 overflow-hidden rounded-full bg-brand-green-darker">
-                <motion.div
-                  className="h-full bg-gradient-gold"
-                  initial={false}
-                  animate={{ width: `${progress}%` }}
-                  transition={{ duration: 0.4 }}
+                <div
+                  className="h-full bg-gradient-gold transition-all duration-400"
+                  style={{ width: `${progress}%` }}
                 />
               </div>
             </div>
           )}
 
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={step}
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -30 }}
-              transition={{ duration: 0.3 }}
-            >
+          <div key={step} className="animate-step-in">
               {step === 0 && (
                 <StepWrapper title="Qual o seu tipo de negócio?" error={errors.business}>
                   <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
@@ -527,8 +517,7 @@ export function Qualification() {
               {step === 4 && <Processing />}
 
               {step === 5 && <Result data={data} onRestart={() => { setStep(0); setData(empty); }} />}
-            </motion.div>
-          </AnimatePresence>
+          </div>
 
           {step < 4 && (
             <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -594,25 +583,13 @@ function Processing() {
   return (
     <div className="flex flex-col items-center justify-center py-10 text-center">
       <Confetti count={30} />
-      <motion.div
-        animate={{ rotate: 360 }}
-        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-        className="relative flex h-24 w-24 items-center justify-center rounded-full border-4 border-brand-yellow/30 border-t-brand-yellow"
-      >
-        <Trophy className="h-10 w-10 text-brand-yellow" />
-      </motion.div>
-      <AnimatePresence mode="wait">
-        <motion.p
-          key={index}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -10 }}
-          className="mt-8 text-center text-lg font-bold leading-tight text-foreground md:text-2xl"
-        >
-          <span className="mr-2">{processingMessages[index].icon}</span>
-          {processingMessages[index].text}
-        </motion.p>
-      </AnimatePresence>
+      <div className="animate-spin relative flex h-24 w-24 items-center justify-center rounded-full border-4 border-brand-yellow/30 border-t-brand-yellow">
+        <Trophy className="h-10 w-10 text-brand-yellow" style={{ animation: "none" }} />
+      </div>
+      <p key={index} className="animate-step-in mt-8 text-center text-lg font-bold leading-tight text-foreground md:text-2xl">
+        <span className="mr-2">{processingMessages[index].icon}</span>
+        {processingMessages[index].text}
+      </p>
     </div>
   );
 }
