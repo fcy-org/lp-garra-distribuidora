@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Trophy, ArrowRight, TrendingUp, Truck, PackageOpen, Headset } from "lucide-react";
-import heroImage from "@/assets/hero-eagle-shopping.png";
+import heroImage from "@/assets/hero-eagle-shopping.webp";
 import { Confetti } from "./Confetti";
 
 const benefits = [
@@ -80,6 +80,8 @@ export function Hero({ onCta }: { onCta: () => void }) {
             alt="Águia da Garra Distribuidora com carrinho de produtos no estádio da Copa"
             width={1280}
             height={1280}
+            fetchPriority="high"
+            decoding="async"
             className="relative mx-auto w-full max-w-[620px] drop-shadow-[0_0_28px_rgba(250,204,21,0.35)] drop-shadow-[0_30px_55px_rgba(0,0,0,0.45)]"
           />
         </motion.div>
