@@ -256,7 +256,7 @@ export function Qualification() {
       if (data.name.trim().length < 2) e.name = "Informe seu nome";
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(data.email.trim())) e.email = "Informe um e-mail válido";
       if (onlyDigits(data.whatsapp).length < 10) e.whatsapp = "Informe um WhatsApp válido";
-      if (!isPiauiCity(data.city)) e.city = "Informe uma cidade do Piauí";
+      if (!data.city) e.city = "Selecione sua cidade";
       if (!isValidCnpj(data.cnpj)) e.cnpj = "Informe um CNPJ válido";
     }
     setErrors(e);
@@ -509,20 +509,16 @@ export function Qualification() {
                     </div>
 
                     <FieldError error={errors.city}>
-                      <input
-                        type="text"
-                        list="piaui-cities"
+                      <select
                         value={data.city}
                         onChange={(e) => setData({ ...data, city: e.target.value })}
-                        placeholder="Cidade no Piauí"
-                        maxLength={80}
                         className="w-full rounded-xl border-2 border-border bg-input/40 px-4 py-3 text-base font-semibold text-foreground outline-none transition focus:border-brand-yellow sm:px-5 sm:py-4 sm:text-lg"
-                      />
-                      <datalist id="piaui-cities">
+                      >
+                        <option value="">Selecione sua cidade</option>
                         {piauiCities.map((city) => (
-                          <option key={city} value={city} />
+                          <option key={city} value={city}>{city}</option>
                         ))}
-                      </datalist>
+                      </select>
                     </FieldError>
                   </div>
                 </StepWrapper>
