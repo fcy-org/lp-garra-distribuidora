@@ -116,20 +116,29 @@ function RootShell({ children }: { children: ReactNode }) {
               s.parentNode.insertBefore(t,s)}(window, document,'script',
               'https://connect.facebook.net/en_US/fbevents.js');
               fbq('init', '1816827349038444');
+              fbq('init', '1327856995974979');
               fbq('track', 'PageView');
+            `,
+          }}
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+              })(window, document, "clarity", "script", "x1a2jy94qn");
             `,
           }}
         />
       </head>
       <body>
         <noscript>
-          <img
-            height="1"
-            width="1"
-            style={{ display: "none" }}
-            src="https://www.facebook.com/tr?id=1816827349038444&ev=PageView&noscript=1"
-            alt=""
-          />
+          <img height="1" width="1" style={{ display: "none" }} src="https://www.facebook.com/tr?id=1816827349038444&ev=PageView&noscript=1" alt="" />
+        </noscript>
+        <noscript>
+          <img height="1" width="1" style={{ display: "none" }} src="https://www.facebook.com/tr?id=1327856995974979&ev=PageView&noscript=1" alt="" />
         </noscript>
         {children}
         <Scripts />
